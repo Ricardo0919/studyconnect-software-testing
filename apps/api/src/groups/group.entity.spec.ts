@@ -32,4 +32,21 @@ describe('Group entity (domain)', () => {
     g.members = g.members.filter(m => m.id !== 'u1');
     expect(g.members.map(m => m.id)).toEqual(['u2']);
   });
+
+  it('addMember avoids duplicate members and removeMember is idempotent', () => {
+    const u1 = Object.assign(new User(), { id: 'u1' });
+
+    const g = new Group();
+    g.members = [];
+
+    g.addMember(u1);
+    g.addMember(u1);
+    expect(g.members.map(m => m.id)).toEqual(['u1']);
+
+    g.removeMember('u1');
+    expect(g.members).toEqual([]);
+
+    g.removeMember('u1');
+    expect(g.members).toEqual([]);
+  });
 });

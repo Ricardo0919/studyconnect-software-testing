@@ -16,4 +16,18 @@ describe('UserAchievement entity (domain)', () => {
     expect(ua.user).toBe(user);
     expect(ua.points).toBe(0);
   });
+
+  it('accumulates points when progress is made', () => {
+    const user = Object.assign(new User(), { id: 'u2', email: 'b@x', displayName: 'B' });
+
+    const ua = new UserAchievement();
+    ua.badge = Badge.STREAK_7_DAYS;
+    ua.user = user;
+    ua.points = ua.points ?? 0;
+
+    ua.points += 10;
+    ua.points += 5;
+
+    expect(ua.points).toBe(15);
+  });
 });

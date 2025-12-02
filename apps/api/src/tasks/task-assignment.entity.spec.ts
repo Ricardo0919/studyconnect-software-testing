@@ -19,4 +19,20 @@ describe('TaskAssignment entity (domain)', () => {
     expect(a.active).toBe(true);
     expect(a.assignedAt instanceof Date).toBe(true);
   });
+
+  it('can be deactivated and reactivated', () => {
+    const task = Object.assign(new Task(), { id: 't2', title: 'HW 2' });
+    const user = Object.assign(new User(), { id: 'u2', email: 'b@x', displayName: 'B' });
+
+    const a = new TaskAssignment();
+    a.task = task;
+    a.user = user;
+    a.active = true;
+
+    a.active = false;
+    expect(a.active).toBe(false);
+
+    a.active = true;
+    expect(a.active).toBe(true);
+  });
 });

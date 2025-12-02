@@ -9,4 +9,10 @@ describe('Category entity (domain)', () => {
     expect(c.name).toBe('Algebra');
     expect(c.description).toBe('Linear Algebra');
   });
+
+  it('allows description to be optional/undefined', () => {
+    const c = new Category();
+    c.name = 'Analysis';
+    expect(c.description).toBeUndefined();
+  });
 });

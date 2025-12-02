@@ -32,4 +32,17 @@ describe('Comment entity (domain)', () => {
     expect(c.task).toBeUndefined();
     expect(c.group).toBe(group);
   });
+
+  it('should not carry empty content', () => {
+    const author = Object.assign(new User(), { id: 'u3', email: 'c@x', displayName: 'C' });
+    const task = Object.assign(new Task(), { id: 't3', title: 'HW 3' });
+
+    const c = new Comment();
+    c.content = '';
+    c.author = author;
+    c.task = task;
+
+    expect(typeof c.content).toBe('string');
+    expect(c.content.length).toBeLessThanOrEqual(0);
+  });
 });

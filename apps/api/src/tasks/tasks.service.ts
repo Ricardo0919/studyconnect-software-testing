@@ -76,6 +76,52 @@ export class TasksService {
     return this.tasks.save(entity);
   }
 
+  async updateTask(
+    id: string,
+    dto: {
+      title?: string;
+      notes?: string;
+      priority?: TaskPriority;
+      dueDate?: string;
+      groupId?: string;
+      categoryId?: string;
+    },
+  ) {
+    const task = await this.tasks.findOne({ where: { id }, relations: ['group', 'category', 'creator'] });
+    if (!task) throw new NotFoundException('Task not found');
+
+    if (dto.title) task.title = dto.title;
+    if (dto.notes !== undefined) task.notes = dto.notes;
+    if (dto.priority) task.priority = dto.priority;
+
+    if (dto.dueDate) {
+      const due = new Date(dto.dueDate);
+      if (due < new Date()) throw new BadRequestException('Due date is in the past');
+      task.dueDate = due;
+    }
+
+    if (dto.groupId) {
+      const group = await this.groups.findOne(dto.groupId);
+      if (!group) throw new NotFoundException('Group not found');
+      task.group = group;
+    }
+
+    if (dto.categoryId) {
+      const category = await this.categories.findOne(dto.categoryId);
+      if (!category) throw new NotFoundException('Category not found');
+      task.category = category;
+    }
+
+    await this.tasks.save(task);
+    return this.findOne(id);
+  }
+
+  async deleteTask(id: string) {
+    const result = await this.tasks.delete({ id });
+    if (!result.affected) throw new NotFoundException('Task not found');
+    return { deleted: true };
+  }
+
   findAll() {
     return this.tasks.find();
   }
