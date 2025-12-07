@@ -56,11 +56,29 @@ When performing a commit, output similar to this appears:
 Running pre-commit checks for StudyConnect API
 Running ESLint
 # ... ESLint output ...
+✖ 176 problems (146 errors, 30 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+
+ESLint finished with errors (exit code 1).
+Please review the issues above, but commit will continue for this lab.
 
 Running Jest tests with coverage
 # ... Jest output ...
+Jest: "global" coverage threshold for statements (80%) not met: 58.23%
+Jest: "global" coverage threshold for branches (80%) not met: 45.98%
+Jest: "global" coverage threshold for lines (80%) not met: 58.68%
+Jest: "global" coverage threshold for functions (80%) not met: 55.17%
 
+Test Suites: 22 passed, 22 total
+Tests:       58 passed, 58 total
+Snapshots:   0 total
+Time:        8.592 s
+Ran all test suites.
+Jest finished with errors/coverage issues (exit code 1).
+Please review the output above, but commit will continue for this lab.
 Pre-commit checks finished (non-blocking).
+[Lab-8 f125f6c] Exercise 8.3
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 ```
 
 ## Reflection
