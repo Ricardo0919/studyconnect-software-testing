@@ -1,4 +1,4 @@
-# Configure Pre-Commit Hook
+# Run local linters automatically using Git’s hook system
 
 ## Overview
 This document explains the setup of a Git **pre-commit hook** for the StudyConnect backend (`apps/api`) as required in Exercise 8.3.  
