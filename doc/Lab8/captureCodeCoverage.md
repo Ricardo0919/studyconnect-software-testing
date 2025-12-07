@@ -79,3 +79,4 @@ Code coverage is a useful metric because it shows how much of the codebase is ex
 - Monitor how test quality evolves as new features are added.
 
 At the same time, coverage has limitations: high percentages do not guarantee good tests or correct behaviour. It is possible to achieve high coverage with superficial assertions. For this project, coverage is best seen as a **diagnostic indicator** that complements other practices (meaningful assertions, testing edge cases, and negative scenarios) rather than a goal on its own.
+
