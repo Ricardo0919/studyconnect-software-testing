@@ -8,7 +8,7 @@ import { TaskAssignment } from '../tasks/task-assignment.entity';
 import { Category } from '../categories/category.entity';
 import { Comment } from '../comments/comment.entity';
 import { UserAchievement } from '../gamification/user-achievement.entity';
-import { newDb } from 'pg-mem';
+import { newDb, DataType  } from 'pg-mem';
 import { randomUUID } from 'crypto';
 
 describe('UserRepository (integration)', () => {
@@ -19,17 +19,17 @@ describe('UserRepository (integration)', () => {
     const db = newDb({ autoCreateForeignKeyIndices: true });
     db.public.registerFunction({
       name: 'version',
-      returns: 'text',
+      returns: DataType.text,
       implementation: () => 'pg-mem',
     });
     db.public.registerFunction({
       name: 'current_database',
-      returns: 'text',
+      returns: DataType.text,
       implementation: () => 'pg-mem',
     });
     db.public.registerFunction({
       name: 'uuid_generate_v4',
-      returns: 'uuid',
+      returns: DataType.uuid,
       implementation: () => randomUUID(),
       impure: true,
     });

@@ -83,7 +83,7 @@ export class UsersService {
   }
 
   validatePasswordRules(password: string) {
-    const errors = [];
+    const errors: string[] = [];
     const value = password ?? '';
     if (value.length < 8) errors.push('minLength');
     if (!/[A-Z]/.test(value)) errors.push('uppercase');
