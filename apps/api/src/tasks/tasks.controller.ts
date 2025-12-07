@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param, Patch, HttpCode, HttpStatus, Req, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, HttpCode, HttpStatus, Req, NotFoundException, Delete } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskStatusDto } from './dto/update-status.dto';
 import { AssignTaskDto } from './dto/assign-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import type { Task } from './task.entity';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { TaskStatus } from '../common/enums/task-status.enum';
@@ -22,6 +23,22 @@ export class TasksController {
   async create(@Req() req: any, @Body() dto: CreateTaskDto) {
     const creatorId = dto.creatorId ?? req?.user?.id;
     return this.tasks.create({ ...dto, creatorId });
+  }
+
+  @Patch(':id')
+  @UsePipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+    stopAtFirstError: true,
+    validationError: { target: false, value: false },
+  }))
+  update(@Param('id') id: string, @Body() dto: UpdateTaskDto) {
+    return this.tasks.updateTask(id, dto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.tasks.deleteTask(id);
   }
 
   @Get()
@@ -171,5 +188,4 @@ function pickAssigneeEmail(t: any): string | null {
   }
   return null;
 }
-
 

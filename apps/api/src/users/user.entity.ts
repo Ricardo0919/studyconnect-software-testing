@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from 'typeorm';
+import { createHash } from 'crypto';
 import { UserRole } from '../common/enums/user-role.enum';
 import { Group } from '../groups/group.entity';
 import { Task } from '../tasks/task.entity';
@@ -15,7 +16,10 @@ export class User {
   @Column() displayName: string;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.STUDENT })
-  role: UserRole;
+  role: UserRole = UserRole.STUDENT;
+
+  @Column({ name: 'password_hash', select: false, nullable: false })
+  passwordHash: string;
 
   @OneToMany(() => Group, g => g.owner) ownedGroups: Group[];
   @ManyToMany(() => Group, g => g.members) groups: Group[];
@@ -25,4 +29,17 @@ export class User {
 
   @OneToMany(() => UserAchievement, ua => ua.user) achievements: UserAchievement[];
   @OneToMany(() => Comment, c => c.author) comments: Comment[];
+
+  setPassword(plain: string) {
+    this.passwordHash = User.hashPassword(plain);
+  }
+
+  verifyPassword(plain: string) {
+    if (!this.passwordHash) return false;
+    return this.passwordHash === User.hashPassword(plain);
+  }
+
+  static hashPassword(plain: string) {
+    return createHash('sha256').update(String(plain)).digest('hex');
+  }
 }

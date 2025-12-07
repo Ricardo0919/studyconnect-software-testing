@@ -29,6 +29,15 @@ describe('Task entity (domain)', () => {
     expect(() => t.setStatus(TaskStatus.COMPLETED)).toThrow(/Invalid status transition/);
   });
 
+  it('rejects other invalid transitions according to state machine', () => {
+    const t = new Task();
+    t.status = TaskStatus.BLOCKED;
+    expect(() => t.setStatus(TaskStatus.COMPLETED)).toThrow(/Invalid status transition/);
+
+    t.status = TaskStatus.COMPLETED;
+    expect(() => t.setStatus(TaskStatus.IN_PROGRESS)).toThrow(/Invalid status transition/);
+  });
+
   it('isOverdue: true when past due and not completed', () => {
     const t = new Task();
     t.status = TaskStatus.IN_PROGRESS;
@@ -47,5 +56,18 @@ describe('Task entity (domain)', () => {
     const t = new Task();
     t.status = TaskStatus.OPEN;
     expect(t.isOverdue()).toBe(false);
+  });
+
+  it('isOverdue: boundary at now vs future', () => {
+    const now = Date.now();
+    const tPast = new Task();
+    tPast.status = TaskStatus.IN_PROGRESS;
+    tPast.dueDate = new Date(now - 1);
+    expect(tPast.isOverdue()).toBe(true);
+
+    const tFuture = new Task();
+    tFuture.status = TaskStatus.IN_PROGRESS;
+    tFuture.dueDate = new Date(now + 1);
+    expect(tFuture.isOverdue()).toBe(false);
   });
 });

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -18,17 +18,36 @@ import { GamificationModule } from './gamification/gamification.module';
 
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (cs: ConfigService) => ({
-        type: 'postgres',
-        host: cs.get('DATABASE_HOST', 'localhost'),
-        port: parseInt(cs.get('DATABASE_PORT', '5432'), 10),
-        username: cs.get('DATABASE_USER', 'studyconnect_app_db'),
-        password: cs.get('DATABASE_PASSWORD', 'super_secure_password_123'),
-        database: cs.get('DATABASE_NAME', 'studyconnect'),
-        autoLoadEntities: true,
-        synchronize: cs.get('DB_SYNC', 'true') === 'true',
-        logging: cs.get('DB_LOGGING', 'true') === 'true',
-      }),
+      useFactory: (cs: ConfigService): TypeOrmModuleOptions => {
+        const nodeEnv = cs.get<string>('NODE_ENV') ?? process.env.NODE_ENV;
+        const isTest = nodeEnv === 'test';
+
+        const host = cs.get<string>('DATABASE_HOST') ?? 'localhost';
+        const port = parseInt(cs.get<string>('DATABASE_PORT') ?? '5432', 10);
+        const username = cs.get<string>('DATABASE_USER') ?? 'studyconnect_app_db';
+        const password =
+          cs.get<string>('DATABASE_PASSWORD') ?? 'super_secure_password_123';
+
+        const dbName = isTest
+          ? cs.get<string>('DATABASE_NAME_TEST') ?? 'studyconnect_testing'
+          : cs.get<string>('DATABASE_NAME') ?? 'studyconnect';
+
+        const sync = (cs.get<string>('DB_SYNC') ?? 'true') === 'true';
+        const loggingEnv = (cs.get<string>('DB_LOGGING') ?? 'true') === 'true';
+
+        return {
+          type: 'postgres',
+          host,
+          port,
+          username,
+          password,
+          database: dbName,
+          autoLoadEntities: true,
+          synchronize: sync,
+          dropSchema: isTest,
+          logging: isTest ? false : loggingEnv,
+        };
+      },
     }),
 
     UsersModule,
@@ -39,9 +58,7 @@ import { GamificationModule } from './gamification/gamification.module';
     CategoriesModule,
     CommentsModule,
     GamificationModule,
-
   ],
-  
   controllers: [AppController],
   providers: [AppService],
 })

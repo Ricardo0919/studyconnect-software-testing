@@ -19,8 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "bdd": "cucumber-js test/features --require test/steps/**/*.ts --require-module ts-node/register --format progress --format html:test/report/cucumber.html",
-    "test:bdd": "npm run bdd"
-
+    "test:bdd": "cross-env NODE_ENV=test npm run bdd"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.8",
@@ -46,14 +45,17 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^22.18.12",
     "@types/supertest": "^6.0.3",
+    "cross-env": "^10.1.0",
     "cucumber-html-reporter": "^7.2.0",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
     "jest": "^30.2.0",
+    "pg-mem": "^3.0.5",
     "prettier": "^3.6.2",
     "source-map-support": "^0.5.21",
+    "sqlite3": "^5.1.7",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.5",
     "ts-loader": "^9.5.2",
