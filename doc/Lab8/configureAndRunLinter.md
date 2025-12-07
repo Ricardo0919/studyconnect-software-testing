@@ -1,7 +1,6 @@
 # Configure and Run Linter
 
 ## Overview
-
 This document describes the linter configuration and execution for the **StudyConnect backend** (NestJS + TypeScript) located in `apps/api`, as required in **Exercise 8.1 – Configure and Run Linter**
 
 ## Linter Tool
@@ -37,7 +36,6 @@ This configuration enables:
    - `lint:api` focuses only on the backend source files under `src/`.
 
 ## Run Commands
-
 From `apps/api` the following commands were executed:
 - Lint only the backend source code:
   ```bash
