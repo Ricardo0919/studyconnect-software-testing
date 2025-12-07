@@ -104,6 +104,12 @@ npm run test
 
 # Test Evidence
 
+Note: It's important to install pg-mem, before doing the tests
+```bash
+cd apps/api
+npm install --save-dev pg-mem
+```
+
 The following targeted Jest suites were executed to ensure the implementation remains correct:
 
 ```bash
@@ -111,3 +117,4 @@ cd apps/api
 npm run test -- users.service
 npm run test -- user.repository
 npm run test -- tasks.service
+```
