@@ -51,5 +51,3 @@ export class User {
     return createHash('sha256').update(String(plain)).digest('hex');
   }
 }
-
-//Test pre-commit hook 
