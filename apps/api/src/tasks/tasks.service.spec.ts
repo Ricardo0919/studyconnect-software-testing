@@ -48,7 +48,10 @@ describe('TasksService', () => {
       providers: [
         TasksService,
         { provide: getRepositoryToken(Task), useValue: taskRepoMock },
-        { provide: getRepositoryToken(TaskAssignment), useValue: assignmentRepoMock },
+        {
+          provide: getRepositoryToken(TaskAssignment),
+          useValue: assignmentRepoMock,
+        },
         { provide: getRepositoryToken(User), useValue: userRepoMock },
         { provide: UsersService, useValue: usersServiceMock },
         { provide: GroupsService, useValue: groupsServiceMock },
@@ -65,28 +68,38 @@ describe('TasksService', () => {
   });
 
   it('findOne delega al repo', async () => {
-    (taskRepoMock.findOne as jest.Mock).mockResolvedValue({ id: 't1' });
+    taskRepoMock.findOne.mockResolvedValue({ id: 't1' });
     const res = await service.findOne('t1');
     expect(res).toEqual({ id: 't1' });
     expect(taskRepoMock.findOne).toHaveBeenCalled();
   });
 
   it('updateTask updates attributes and returns latest entity', async () => {
-    const existing = { id: 't1', title: 'Old Title', notes: 'old', priority: 'MEDIUM' };
-    (taskRepoMock.findOne as jest.Mock)
+    const existing = {
+      id: 't1',
+      title: 'Old Title',
+      notes: 'old',
+      priority: 'MEDIUM',
+    };
+    taskRepoMock.findOne
       .mockResolvedValueOnce(existing)
       .mockResolvedValueOnce({ id: 't1', title: 'Updated Title' });
-    (taskRepoMock.save as jest.Mock).mockResolvedValue(existing);
+    taskRepoMock.save.mockResolvedValue(existing);
 
-    const dto = { title: 'Updated Title', dueDate: new Date(Date.now() + 86_400_000).toISOString() };
+    const dto = {
+      title: 'Updated Title',
+      dueDate: new Date(Date.now() + 86_400_000).toISOString(),
+    };
     const result = await service.updateTask('t1', dto as any);
 
-    expect(taskRepoMock.save).toHaveBeenCalledWith(expect.objectContaining({ title: 'Updated Title' }));
+    expect(taskRepoMock.save).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Updated Title' }),
+    );
     expect(result).toEqual({ id: 't1', title: 'Updated Title' });
   });
 
   it('deleteTask removes a task via repository delete', async () => {
-    (taskRepoMock.delete as jest.Mock).mockResolvedValue({ affected: 1 });
+    taskRepoMock.delete.mockResolvedValue({ affected: 1 });
     const result = await service.deleteTask('t1');
     expect(taskRepoMock.delete).toHaveBeenCalledWith({ id: 't1' });
     expect(result).toEqual({ deleted: true });

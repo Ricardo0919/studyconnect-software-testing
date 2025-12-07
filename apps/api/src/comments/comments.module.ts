@@ -8,7 +8,12 @@ import { TasksModule } from '../tasks/tasks.module';
 import { GroupsModule } from '../groups/groups.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Comment]), UsersModule, TasksModule, GroupsModule],
+  imports: [
+    TypeOrmModule.forFeature([Comment]),
+    UsersModule,
+    TasksModule,
+    GroupsModule,
+  ],
   providers: [CommentsService],
   controllers: [CommentsController],
 })

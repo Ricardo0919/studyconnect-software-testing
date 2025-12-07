@@ -8,7 +8,9 @@ export const createMockRepo = () => ({
   delete: jest.fn(),
 });
 
-export const createMock = <T extends object>(impl?: Partial<Record<keyof T, any>>): T =>
+export const createMock = <T extends object>(
+  impl?: Partial<Record<keyof T, any>>,
+): T =>
   ({
     ...(impl ?? {}),
-  } as T);
+  }) as T;

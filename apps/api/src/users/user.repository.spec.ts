@@ -8,7 +8,7 @@ import { TaskAssignment } from '../tasks/task-assignment.entity';
 import { Category } from '../categories/category.entity';
 import { Comment } from '../comments/comment.entity';
 import { UserAchievement } from '../gamification/user-achievement.entity';
-import { newDb, DataType  } from 'pg-mem';
+import { newDb, DataType } from 'pg-mem';
 import { randomUUID } from 'crypto';
 
 describe('UserRepository (integration)', () => {
@@ -35,7 +35,15 @@ describe('UserRepository (integration)', () => {
     });
     dataSource = await db.adapters.createTypeormDataSource({
       type: 'postgres',
-      entities: [User, Group, Task, TaskAssignment, Category, Comment, UserAchievement],
+      entities: [
+        User,
+        Group,
+        Task,
+        TaskAssignment,
+        Category,
+        Comment,
+        UserAchievement,
+      ],
       synchronize: true,
     });
     await dataSource.initialize();
@@ -69,7 +77,10 @@ describe('UserRepository (integration)', () => {
       displayName: 'Old',
       passwordHash: User.hashPassword('StrongPass1!'),
     });
-    const updated = await repo.updateUser(created.id, { displayName: 'New', role: UserRole.ADMIN });
+    const updated = await repo.updateUser(created.id, {
+      displayName: 'New',
+      role: UserRole.ADMIN,
+    });
 
     expect(updated?.displayName).toBe('New');
     expect(updated?.role).toBe(UserRole.ADMIN);
@@ -100,8 +111,8 @@ describe('UserRepository (integration)', () => {
     });
 
     const admins = await repo.findByRole(UserRole.ADMIN);
-    expect(admins.map(a => a.email)).toContain('admin@example.com');
-    expect(admins.map(a => a.email)).not.toContain('student@example.com');
+    expect(admins.map((a) => a.email)).toContain('admin@example.com');
+    expect(admins.map((a) => a.email)).not.toContain('student@example.com');
   });
 
   it('finds users by team membership', async () => {
@@ -117,14 +128,20 @@ describe('UserRepository (integration)', () => {
     });
 
     const groupRepo = dataSource.getRepository(Group);
-    const group = groupRepo.create({ name: 'Group A', owner, members: [owner] });
+    const group = groupRepo.create({
+      name: 'Group A',
+      owner,
+      members: [owner],
+    });
     const savedGroup = await groupRepo.save(group);
 
     await repo.addUserToGroup(member, savedGroup.id);
 
     const members = await repo.findByTeamMembership(savedGroup.id);
-    const emails = members.map(m => m.email);
+    const emails = members.map((m) => m.email);
 
-    expect(emails).toEqual(expect.arrayContaining(['owner@example.com', 'member@example.com']));
+    expect(emails).toEqual(
+      expect.arrayContaining(['owner@example.com', 'member@example.com']),
+    );
   });
 });

@@ -18,7 +18,10 @@ export class HealthController {
       await this.ds.query('SELECT 1');
       return { ok: true, deps: { db: 'up' } };
     } catch {
-      throw new ServiceUnavailableException({ ok: false, deps: { db: 'down' } });
+      throw new ServiceUnavailableException({
+        ok: false,
+        deps: { db: 'down' },
+      });
     }
   }
 }

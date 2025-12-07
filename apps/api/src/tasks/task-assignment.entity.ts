@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, Unique, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  Column,
+  Unique,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../users/user.entity';
 import { Task } from './task.entity';
 
@@ -7,7 +14,7 @@ export class TaskAssignment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, u => u.assignments, {
+  @ManyToOne(() => User, (u) => u.assignments, {
     eager: true,
     onDelete: 'CASCADE',
     nullable: false,
@@ -15,7 +22,7 @@ export class TaskAssignment {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Task, t => t.assignees, {
+  @ManyToOne(() => Task, (t) => t.assignees, {
     onDelete: 'CASCADE',
     nullable: false,
   })

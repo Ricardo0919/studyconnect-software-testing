@@ -14,21 +14,32 @@ export class GroupsService {
   async create(name: string, description: string | undefined, ownerId: string) {
     const owner = await this.users.findOne(ownerId);
     if (!owner) throw new NotFoundException('Owner not found');
-    return this.repo.save(this.repo.create({ name, description, owner, members: [owner] }));
+    return this.repo.save(
+      this.repo.create({ name, description, owner, members: [owner] }),
+    );
   }
 
-  findAll() { return this.repo.find(); }
-  findOne(id: string) { return this.repo.findOne({ where: { id } }); }
+  findAll() {
+    return this.repo.find();
+  }
+  findOne(id: string) {
+    return this.repo.findOne({ where: { id } });
+  }
 
   async addMember(groupId: string, userId: string) {
-    const [g, u] = await Promise.all([this.findOne(groupId), this.users.findOne(userId)]);
+    const [g, u] = await Promise.all([
+      this.findOne(groupId),
+      this.users.findOne(userId),
+    ]);
     if (!g || !u) throw new NotFoundException('Group or User not found');
-    g.addMember(u); return this.repo.save(g);
+    g.addMember(u);
+    return this.repo.save(g);
   }
 
   async removeMember(groupId: string, userId: string) {
     const g = await this.findOne(groupId);
     if (!g) throw new NotFoundException('Group not found');
-    g.removeMember(userId); return this.repo.save(g);
+    g.removeMember(userId);
+    return this.repo.save(g);
   }
 }

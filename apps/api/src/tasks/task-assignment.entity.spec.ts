@@ -6,7 +6,11 @@ import { User } from '../users/user.entity';
 describe('TaskAssignment entity (domain)', () => {
   it('creates with task + user; defaults active=true and sets assignedAt', () => {
     const task = Object.assign(new Task(), { id: 't1', title: 'HW' });
-    const user = Object.assign(new User(), { id: 'u1', email: 'a@x', displayName: 'A' });
+    const user = Object.assign(new User(), {
+      id: 'u1',
+      email: 'a@x',
+      displayName: 'A',
+    });
 
     const a = new TaskAssignment();
     a.task = task;
@@ -22,7 +26,11 @@ describe('TaskAssignment entity (domain)', () => {
 
   it('can be deactivated and reactivated', () => {
     const task = Object.assign(new Task(), { id: 't2', title: 'HW 2' });
-    const user = Object.assign(new User(), { id: 'u2', email: 'b@x', displayName: 'B' });
+    const user = Object.assign(new User(), {
+      id: 'u2',
+      email: 'b@x',
+      displayName: 'B',
+    });
 
     const a = new TaskAssignment();
     a.task = task;

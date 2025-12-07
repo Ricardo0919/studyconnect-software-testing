@@ -8,7 +8,8 @@ import { UsersService } from '../users/users.service';
 @Injectable()
 export class GamificationService {
   constructor(
-    @InjectRepository(UserAchievement) private readonly repo: Repository<UserAchievement>,
+    @InjectRepository(UserAchievement)
+    private readonly repo: Repository<UserAchievement>,
     private readonly users: UsersService,
   ) {}
 

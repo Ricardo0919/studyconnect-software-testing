@@ -6,7 +6,7 @@ import { Badge } from '../common/enums/badge.enum';
 export class UserAchievement {
   @PrimaryGeneratedColumn('uuid') id: string;
 
-  @ManyToOne(() => User, u => u.achievements, { eager: true })
+  @ManyToOne(() => User, (u) => u.achievements, { eager: true })
   user: User;
 
   @Column({ type: 'enum', enum: Badge }) badge: Badge;
