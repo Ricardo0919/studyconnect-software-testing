@@ -5,12 +5,13 @@ import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { DataSource } from 'typeorm';
 
-describe('Core flow (e2e) — Test API', () => {
+describe('Core flow (e2e) - Test API', () => {
   let app: INestApplication;
   let ds: DataSource;
 
   const http = () => request(app.getHttpServer());
   const ts = Date.now();
+  const password = 'Password123!';
 
   let userA: string;
   let userB: string;
@@ -44,10 +45,11 @@ describe('Core flow (e2e) — Test API', () => {
 
   it('create user A', async () => {
     const res = await http()
-      .post('/users')
+      .post('/users/register')
       .send({
         email: `charlie+${ts}@example.com`,
         displayName: `Charlie ${ts}`,
+        password,
       })
       .expect(201);
     userA = res.body.id;
@@ -56,8 +58,12 @@ describe('Core flow (e2e) — Test API', () => {
 
   it('create user B', async () => {
     const res = await http()
-      .post('/users')
-      .send({ email: `dana+${ts}@example.com`, displayName: `Dana ${ts}` })
+      .post('/users/register')
+      .send({
+        email: `dana+${ts}@example.com`,
+        displayName: `Dana ${ts}`,
+        password,
+      })
       .expect(201);
     userB = res.body.id;
     expect(userB).toBeDefined();
@@ -112,7 +118,7 @@ describe('Core flow (e2e) — Test API', () => {
     const res = await http()
       .post('/comments')
       .send({
-        content: 'I’ll take Q1–Q3, can you handle Q4–Q6?',
+        content: "I'll take Q1-Q3, can you handle Q4-Q6?",
         authorId: userA,
         taskId,
       })
