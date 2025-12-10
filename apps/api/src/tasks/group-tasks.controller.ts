@@ -14,7 +14,12 @@ export class GroupTasksController {
     @Req() req: any,
   ) {
     const currentEmail = req?.user?.email ?? 'alice@uni.de';
-    console.log('GroupTasksController.assignByEmail called', { groupId, taskId, assignee: dto.assignee, currentEmail });
+    console.log('GroupTasksController.assignByEmail called', {
+      groupId,
+      taskId,
+      assignee: dto.assignee,
+      currentEmail,
+    });
     return this.tasks.assignTask(groupId, taskId, dto.assignee, currentEmail);
   }
 

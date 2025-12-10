@@ -14,7 +14,9 @@ describe('GamificationController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GamificationController],
-      providers: [{ provide: GamificationService, useValue: gamificationServiceMock }],
+      providers: [
+        { provide: GamificationService, useValue: gamificationServiceMock },
+      ],
     }).compile();
 
     controller = module.get(GamificationController);

@@ -6,11 +6,15 @@ export class GroupsController {
   constructor(private readonly groups: GroupsService) {}
 
   @Post()
-  create(@Body() body: { name: string; description?: string; ownerId: string }) {
+  create(
+    @Body() body: { name: string; description?: string; ownerId: string },
+  ) {
     return this.groups.create(body.name, body.description, body.ownerId);
   }
 
-  @Get() findAll() { return this.groups.findAll(); }
+  @Get() findAll() {
+    return this.groups.findAll();
+  }
 
   @Post(':id/members/:userId')
   addMember(@Param('id') id: string, @Param('userId') userId: string) {

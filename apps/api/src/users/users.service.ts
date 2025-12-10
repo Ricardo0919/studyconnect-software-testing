@@ -12,15 +12,24 @@ import { UserRole } from '../common/enums/user-role.enum';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private readonly repo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private readonly repo: Repository<User>,
+  ) {}
 
-  async register(data: { email: string; displayName: string; password: string; role?: UserRole }) {
+  async register(data: {
+    email: string;
+    displayName: string;
+    password: string;
+    role?: UserRole;
+  }) {
     const normalizedEmail = this.normalizeEmail(data.email);
     await this.ensureEmailIsUnique(normalizedEmail);
 
     const passwordResult = this.validatePasswordRules(data.password);
     if (!passwordResult.valid) {
-      throw new BadRequestException(`Password requirements not met: ${passwordResult.errors.join(', ')}`);
+      throw new BadRequestException(
+        `Password requirements not met: ${passwordResult.errors.join(', ')}`,
+      );
     }
 
     const entity = this.repo.create({
@@ -62,7 +71,10 @@ export class UsersService {
     return this.stripSensitive(saved);
   }
 
-  async updateProfile(userId: string, changes: { displayName?: string; password?: string }) {
+  async updateProfile(
+    userId: string,
+    changes: { displayName?: string; password?: string },
+  ) {
     const user = await this.repo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
@@ -73,7 +85,9 @@ export class UsersService {
     if (changes.password) {
       const result = this.validatePasswordRules(changes.password);
       if (!result.valid) {
-        throw new BadRequestException(`Password requirements not met: ${result.errors.join(', ')}`);
+        throw new BadRequestException(
+          `Password requirements not met: ${result.errors.join(', ')}`,
+        );
       }
       user.setPassword(changes.password);
     }
@@ -97,7 +111,12 @@ export class UsersService {
     };
   }
 
-  async create(data: { email: string; displayName: string; password: string; role?: UserRole }) {
+  async create(data: {
+    email: string;
+    displayName: string;
+    password: string;
+    role?: UserRole;
+  }) {
     return this.register(data);
   }
 
@@ -122,6 +141,8 @@ export class UsersService {
   }
 
   private normalizeEmail(email: string) {
-    return String(email ?? '').trim().toLowerCase();
+    return String(email ?? '')
+      .trim()
+      .toLowerCase();
   }
 }

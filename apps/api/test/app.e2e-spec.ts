@@ -27,11 +27,10 @@ describe('AppController (e2e)', () => {
       .expect('Hello World!');
   });
 
-   afterAll(async () => {
+  afterAll(async () => {
     await app.close();
     if (dataSource && dataSource.isInitialized) {
       await dataSource.destroy();
     }
   });
-
 });

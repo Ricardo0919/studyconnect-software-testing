@@ -24,13 +24,14 @@ import { GamificationModule } from './gamification/gamification.module';
 
         const host = cs.get<string>('DATABASE_HOST') ?? 'localhost';
         const port = parseInt(cs.get<string>('DATABASE_PORT') ?? '5432', 10);
-        const username = cs.get<string>('DATABASE_USER') ?? 'studyconnect_app_db';
+        const username =
+          cs.get<string>('DATABASE_USER') ?? 'studyconnect_app_db';
         const password =
           cs.get<string>('DATABASE_PASSWORD') ?? 'super_secure_password_123';
 
         const dbName = isTest
-          ? cs.get<string>('DATABASE_NAME_TEST') ?? 'studyconnect_testing'
-          : cs.get<string>('DATABASE_NAME') ?? 'studyconnect';
+          ? (cs.get<string>('DATABASE_NAME_TEST') ?? 'studyconnect_testing')
+          : (cs.get<string>('DATABASE_NAME') ?? 'studyconnect');
 
         const sync = (cs.get<string>('DB_SYNC') ?? 'true') === 'true';
         const loggingEnv = (cs.get<string>('DB_LOGGING') ?? 'true') === 'true';

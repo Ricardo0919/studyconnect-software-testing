@@ -6,7 +6,11 @@ import { Group } from '../groups/group.entity';
 
 describe('Comment entity (domain)', () => {
   it('creates with content and author, linked to a task', () => {
-    const author = Object.assign(new User(), { id: 'u1', email: 'a@x', displayName: 'A' });
+    const author = Object.assign(new User(), {
+      id: 'u1',
+      email: 'a@x',
+      displayName: 'A',
+    });
     const task = Object.assign(new Task(), { id: 't1', title: 'HW' });
 
     const c = new Comment();
@@ -21,7 +25,11 @@ describe('Comment entity (domain)', () => {
   });
 
   it('can link to a group instead of a task', () => {
-    const author = Object.assign(new User(), { id: 'u2', email: 'b@x', displayName: 'B' });
+    const author = Object.assign(new User(), {
+      id: 'u2',
+      email: 'b@x',
+      displayName: 'B',
+    });
     const group = Object.assign(new Group(), { id: 'g1', name: 'Quantum' });
 
     const c = new Comment();
@@ -34,7 +42,11 @@ describe('Comment entity (domain)', () => {
   });
 
   it('should not carry empty content', () => {
-    const author = Object.assign(new User(), { id: 'u3', email: 'c@x', displayName: 'C' });
+    const author = Object.assign(new User(), {
+      id: 'u3',
+      email: 'c@x',
+      displayName: 'C',
+    });
     const task = Object.assign(new Task(), { id: 't3', title: 'HW 3' });
 
     const c = new Comment();

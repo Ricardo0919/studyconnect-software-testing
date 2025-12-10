@@ -5,7 +5,11 @@ import { Badge } from '../common/enums/badge.enum';
 
 describe('UserAchievement entity (domain)', () => {
   it('creates with badge and user; default points = 0', () => {
-    const user = Object.assign(new User(), { id: 'u1', email: 'a@x', displayName: 'A' });
+    const user = Object.assign(new User(), {
+      id: 'u1',
+      email: 'a@x',
+      displayName: 'A',
+    });
 
     const ua = new UserAchievement();
     ua.badge = Badge.FIRST_TASK;
@@ -18,7 +22,11 @@ describe('UserAchievement entity (domain)', () => {
   });
 
   it('accumulates points when progress is made', () => {
-    const user = Object.assign(new User(), { id: 'u2', email: 'b@x', displayName: 'B' });
+    const user = Object.assign(new User(), {
+      id: 'u2',
+      email: 'b@x',
+      displayName: 'B',
+    });
 
     const ua = new UserAchievement();
     ua.badge = Badge.STREAK_7_DAYS;

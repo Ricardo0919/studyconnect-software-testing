@@ -26,11 +26,11 @@ describe('Group entity (domain)', () => {
     g.members.push(u1);
     g.members.push(u2);
 
-    expect(g.members.map(m => m.id)).toEqual(['u1','u2']);
+    expect(g.members.map((m) => m.id)).toEqual(['u1', 'u2']);
 
     // remove u1
-    g.members = g.members.filter(m => m.id !== 'u1');
-    expect(g.members.map(m => m.id)).toEqual(['u2']);
+    g.members = g.members.filter((m) => m.id !== 'u1');
+    expect(g.members.map((m) => m.id)).toEqual(['u2']);
   });
 
   it('addMember avoids duplicate members and removeMember is idempotent', () => {
@@ -41,7 +41,7 @@ describe('Group entity (domain)', () => {
 
     g.addMember(u1);
     g.addMember(u1);
-    expect(g.members.map(m => m.id)).toEqual(['u1']);
+    expect(g.members.map((m) => m.id)).toEqual(['u1']);
 
     g.removeMember('u1');
     expect(g.members).toEqual([]);

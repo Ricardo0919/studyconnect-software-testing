@@ -9,7 +9,11 @@ export class CategoriesController {
     return this.categories.create(body.name, body.description);
   }
 
-  @Get() findAll() { return this.categories.findAll(); }
+  @Get() findAll() {
+    return this.categories.findAll();
+  }
 
-  @Get(':id') findOne(@Param('id') id: string) { return this.categories.findOne(id); }
+  @Get(':id') findOne(@Param('id') id: string) {
+    return this.categories.findOne(id);
+  }
 }

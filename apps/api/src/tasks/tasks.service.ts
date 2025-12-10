@@ -1,4 +1,9 @@
-import {Injectable, NotFoundException, BadRequestException, ForbiddenException,} from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial, In } from 'typeorm';
 import { Task } from './task.entity';
@@ -23,7 +28,8 @@ const ALLOWED: Record<TaskStatus, TaskStatus[]> = {
 export class TasksService {
   constructor(
     @InjectRepository(Task) private readonly tasks: Repository<Task>,
-    @InjectRepository(TaskAssignment) private readonly assignments: Repository<TaskAssignment>,
+    @InjectRepository(TaskAssignment)
+    private readonly assignments: Repository<TaskAssignment>,
     @InjectRepository(User) private readonly usersRepo: Repository<User>,
     private readonly users: UsersService,
     private readonly groups: GroupsService,
@@ -47,14 +53,16 @@ export class TasksService {
     const creator = await this.users.findOne(dto.creatorId);
     if (!creator) throw new NotFoundException('Creator not found');
 
-    let group = undefined as (typeof this.groups extends any ? any : never);
+    let group = undefined as typeof this.groups extends any ? any : never;
     if (dto.groupId) {
       const g = await this.groups.findOne(dto.groupId);
       if (!g) throw new NotFoundException('Group not found');
       group = g;
     }
 
-    let category = undefined as (typeof this.categories extends any ? any : never);
+    let category = undefined as typeof this.categories extends any
+      ? any
+      : never;
     if (dto.categoryId) {
       const c = await this.categories.findOne(dto.categoryId);
       if (!c) throw new NotFoundException('Category not found');
@@ -87,7 +95,10 @@ export class TasksService {
       categoryId?: string;
     },
   ) {
-    const task = await this.tasks.findOne({ where: { id }, relations: ['group', 'category', 'creator'] });
+    const task = await this.tasks.findOne({
+      where: { id },
+      relations: ['group', 'category', 'creator'],
+    });
     if (!task) throw new NotFoundException('Task not found');
 
     if (dto.title) task.title = dto.title;
@@ -96,7 +107,8 @@ export class TasksService {
 
     if (dto.dueDate) {
       const due = new Date(dto.dueDate);
-      if (due < new Date()) throw new BadRequestException('Due date is in the past');
+      if (due < new Date())
+        throw new BadRequestException('Due date is in the past');
       task.dueDate = due;
     }
 
@@ -129,7 +141,15 @@ export class TasksService {
   async findOne(id: string) {
     const t = await this.tasks.findOne({
       where: { id },
-      relations: ['assignees', 'assignees.user', 'group', 'creator', 'category', 'group.owner', 'group.members']
+      relations: [
+        'assignees',
+        'assignees.user',
+        'group',
+        'creator',
+        'category',
+        'group.owner',
+        'group.members',
+      ],
     });
 
     if (!t) return null;
@@ -139,16 +159,19 @@ export class TasksService {
       relations: ['user'],
       order: { assignedAt: 'DESC' },
     });
-    
+
     t.assignees = assignments;
 
     return t;
   }
 
   async assign(taskId: string, userId: string) {
-    const [t, u] = await Promise.all([this.findOne(taskId), this.users.findOne(userId)]);
+    const [t, u] = await Promise.all([
+      this.findOne(taskId),
+      this.users.findOne(userId),
+    ]);
     if (!t || !u) throw new NotFoundException('Task or User not found');
-    const existing = (t.assignees ?? []).find(a => a.user.id === u.id);
+    const existing = (t.assignees ?? []).find((a) => a.user.id === u.id);
     if (existing) return t;
     const a = this.assignments.create({ task: t, user: u });
     await this.assignments.save(a);
@@ -158,11 +181,11 @@ export class TasksService {
   async unassign(taskId: string, userId: string) {
     const t = await this.findOne(taskId);
     if (!t) throw new NotFoundException('Task not found');
-    const toRemove = (t.assignees ?? []).find(a => a.user.id === userId);
+    const toRemove = (t.assignees ?? []).find((a) => a.user.id === userId);
     if (toRemove) await this.assignments.remove(toRemove);
     return this.findOne(taskId);
   }
-  
+
   async assignTask(
     groupId: string,
     taskId: string,
@@ -170,7 +193,13 @@ export class TasksService {
     currentUserEmail: string,
     currentUserId?: string,
   ) {
-    return this.assignTaskCore(groupId, taskId, assigneeEmail, currentUserEmail, currentUserId);
+    return this.assignTaskCore(
+      groupId,
+      taskId,
+      assigneeEmail,
+      currentUserEmail,
+      currentUserId,
+    );
   }
 
   private async assignTaskCore(
@@ -184,29 +213,50 @@ export class TasksService {
     if (!group) throw new NotFoundException('Group not found');
 
     const membersRaw = Array.isArray(group.members) ? group.members : [];
-    const members = membersRaw.map(m => ({ user: (m as any).user ?? m, role: (m as any).role ?? (m as any).user?.role }));
+    const members = membersRaw.map((m) => ({
+      user: (m as any).user ?? m,
+      role: (m as any).role ?? (m as any).user?.role,
+    }));
 
-    const me = members.find(m => m?.user?.id === currentUserId) ??
-              members.find(m => m?.user?.email === currentUserEmail);
+    const me =
+      members.find((m) => m?.user?.id === currentUserId) ??
+      members.find((m) => m?.user?.email === currentUserEmail);
     const meRole = (me?.role ?? me?.user?.role ?? '').toString().toUpperCase();
-    const isOwner = !!group.owner && (group.owner.id === currentUserId || group.owner.email === currentUserEmail);
+    const isOwner =
+      !!group.owner &&
+      (group.owner.id === currentUserId ||
+        group.owner.email === currentUserEmail);
     const canAssign = isOwner || meRole === 'ADMIN';
     if (!canAssign) throw new ForbiddenException('Forbidden');
 
-    const assigneeMember = members.find(m => m?.user?.email === assigneeEmail);
-    if (!assigneeMember) throw new ForbiddenException('User is not a member of this group');
+    const assigneeMember = members.find(
+      (m) => m?.user?.email === assigneeEmail,
+    );
+    if (!assigneeMember)
+      throw new ForbiddenException('User is not a member of this group');
 
     const task = await this.tasks.findOne({
       where: { id: taskId },
-      relations: ['assignees', 'assignees.user', 'group', 'creator', 'category'],
+      relations: [
+        'assignees',
+        'assignees.user',
+        'group',
+        'creator',
+        'category',
+      ],
     });
-    if (!task || task.group?.id !== groupId) throw new NotFoundException('Task not found');
+    if (!task || task.group?.id !== groupId)
+      throw new NotFoundException('Task not found');
 
-    if ((task.assignees ?? []).some(a => a?.user?.id === assigneeMember.user.id && a.active !== false)) {
+    if (
+      (task.assignees ?? []).some(
+        (a) => a?.user?.id === assigneeMember.user.id && a.active !== false,
+      )
+    ) {
       return this.findOne(taskId);
     }
 
-    await this.dataSource.transaction(async manager => {
+    await this.dataSource.transaction(async (manager) => {
       const repo = manager.getRepository(TaskAssignment);
       const assignment = repo.create({
         user: assigneeMember.user,
@@ -220,7 +270,6 @@ export class TasksService {
     return this.findOne(taskId);
   }
 
-
   async setStatus(id: string, next: TaskStatus) {
     const qr = this.tasks.manager.connection.createQueryRunner();
     await qr.connect();
@@ -229,7 +278,7 @@ export class TasksService {
       const task = await qr.manager.findOne(Task, { where: { id } });
       if (!task) throw new NotFoundException('Task not found');
 
-      const current = task.status as TaskStatus;
+      const current = task.status;
       const allowed = ALLOWED[current] ?? [];
 
       if (!allowed.includes(next)) {
@@ -245,7 +294,8 @@ export class TasksService {
       return this.findOne(id);
     } catch (e) {
       if (qr.isTransactionActive) await qr.rollbackTransaction();
-      if (e instanceof BadRequestException || e instanceof NotFoundException) throw e;
+      if (e instanceof BadRequestException || e instanceof NotFoundException)
+        throw e;
       throw new BadRequestException('Invalid status transition');
     } finally {
       await qr.release();
@@ -257,7 +307,7 @@ export class TasksService {
       where: { status: In([TaskStatus.OPEN, TaskStatus.IN_PROGRESS]) },
     });
 
-    const toMark = list.filter(t => t.dueDate && new Date(t.dueDate) < now);
+    const toMark = list.filter((t) => t.dueDate && new Date(t.dueDate) < now);
 
     for (const t of toMark) {
       t.status = TaskStatus.OVERDUE;

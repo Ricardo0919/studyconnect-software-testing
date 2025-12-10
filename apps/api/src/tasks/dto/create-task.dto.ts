@@ -8,21 +8,26 @@ export class CreateTaskDto {
   @IsNotEmpty({ message: 'Title is required' })
   title!: string;
 
-  @IsOptional() @IsString()
+  @IsOptional()
+  @IsString()
   notes?: string;
 
   @IsOptional()
   priority?: TaskPriority;
 
-  @IsOptional() @IsISO8601()
+  @IsOptional()
+  @IsISO8601()
   dueDate?: string;
 
-  @IsOptional() @IsString()
+  @IsOptional()
+  @IsString()
   creatorId?: string;
 
-  @IsOptional() @IsString()
+  @IsOptional()
+  @IsString()
   groupId?: string;
 
-  @IsOptional() @IsString()
+  @IsOptional()
+  @IsString()
   categoryId?: string;
 }

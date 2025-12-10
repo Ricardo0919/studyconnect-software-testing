@@ -53,7 +53,10 @@ export class UserRepository {
   }
 
   async addUserToGroup(user: User, groupId: string) {
-    const group = await this.groupRepo.findOne({ where: { id: groupId }, relations: ['members'] });
+    const group = await this.groupRepo.findOne({
+      where: { id: groupId },
+      relations: ['members'],
+    });
     if (!group) return null;
     group.addMember(user);
     await this.groupRepo.save(group);
@@ -61,6 +64,8 @@ export class UserRepository {
   }
 
   private normalizeEmail(email: string) {
-    return String(email ?? '').trim().toLowerCase();
+    return String(email ?? '')
+      .trim()
+      .toLowerCase();
   }
 }

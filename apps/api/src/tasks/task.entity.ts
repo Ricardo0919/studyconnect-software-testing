@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { TaskStatus } from '../common/enums/task-status.enum';
 import { TaskPriority } from '../common/enums/task-priority.enum';
 import { User } from '../users/user.entity';
@@ -22,24 +28,24 @@ export class Task {
 
   @Column({ type: 'timestamptz', nullable: true }) dueDate?: Date;
 
-  @ManyToOne(() => User, u => u.createdTasks, { eager: true })
+  @ManyToOne(() => User, (u) => u.createdTasks, { eager: true })
   creator: User;
 
-  @ManyToOne(() => Group, g => g.tasks, { nullable: true, eager: true })
+  @ManyToOne(() => Group, (g) => g.tasks, { nullable: true, eager: true })
   group?: Group;
 
-  @ManyToOne(() => Category, c => c.tasks, { nullable: true, eager: true })
+  @ManyToOne(() => Category, (c) => c.tasks, { nullable: true, eager: true })
   category?: Category;
 
-  @OneToMany(() => TaskAssignment, a => a.task, { 
-    cascade: true, 
-    eager: true
+  @OneToMany(() => TaskAssignment, (a) => a.task, {
+    cascade: true,
+    eager: true,
   })
   assignees: TaskAssignment[];
 
   get assignee() {
     if (!this.assignees?.length) return null;
-    const active = this.assignees.filter(a => a.active);
+    const active = this.assignees.filter((a) => a.active);
     return active.length > 0 ? active[0].user : null;
   }
 
@@ -53,15 +59,15 @@ export class Task {
       dueDate: this.dueDate,
       group: this.group,
       category: this.category,
-      creator: this.creator
+      creator: this.creator,
     };
-    
-    const active = (this.assignees || []).filter(a => a.active);
+
+    const active = (this.assignees || []).filter((a) => a.active);
     const latest = active.length > 0 ? active[0].user : null;
-    
+
     json.assignee = latest?.email;
-    json.assignees = active.map(a => a.user?.email).filter(Boolean);
-    
+    json.assignees = active.map((a) => a.user?.email).filter(Boolean);
+
     return json;
   }
 
@@ -81,13 +87,16 @@ export class Task {
     if (!allowedTransitions.includes(next)) {
       throw new Error(`Invalid status transition: ${this.status} → ${next}`);
     }
-    
+
     this.status = next;
     return this.status;
   }
 
-
   isOverdue(now = new Date()): boolean {
-    return !!this.dueDate && this.status !== TaskStatus.COMPLETED && this.dueDate.getTime() < now.getTime();
+    return (
+      !!this.dueDate &&
+      this.status !== TaskStatus.COMPLETED &&
+      this.dueDate.getTime() < now.getTime()
+    );
   }
 }

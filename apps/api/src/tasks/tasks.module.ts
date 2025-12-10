@@ -10,7 +10,12 @@ import { CategoriesModule } from '../categories/categories.module';
 import { GroupTasksController } from './group-tasks.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Task, TaskAssignment]), UsersModule, GroupsModule, CategoriesModule],
+  imports: [
+    TypeOrmModule.forFeature([Task, TaskAssignment]),
+    UsersModule,
+    GroupsModule,
+    CategoriesModule,
+  ],
   providers: [TasksService],
   controllers: [TasksController, GroupTasksController],
   exports: [TypeOrmModule, TasksService],

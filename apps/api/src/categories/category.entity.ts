@@ -9,5 +9,5 @@ export class Category {
 
   @Column({ nullable: true }) description?: string;
 
-  @OneToMany(() => Task, t => t.category) tasks: Task[];
+  @OneToMany(() => Task, (t) => t.category) tasks: Task[];
 }

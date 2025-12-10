@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToMany,
+} from 'typeorm';
 import { createHash } from 'crypto';
 import { UserRole } from '../common/enums/user-role.enum';
 import { Group } from '../groups/group.entity';
@@ -21,14 +27,16 @@ export class User {
   @Column({ name: 'password_hash', select: false, nullable: false })
   passwordHash: string;
 
-  @OneToMany(() => Group, g => g.owner) ownedGroups: Group[];
-  @ManyToMany(() => Group, g => g.members) groups: Group[];
+  @OneToMany(() => Group, (g) => g.owner) ownedGroups: Group[];
+  @ManyToMany(() => Group, (g) => g.members) groups: Group[];
 
-  @OneToMany(() => Task, t => t.creator) createdTasks: Task[];
-  @OneToMany(() => TaskAssignment, ta => ta.user) assignments: TaskAssignment[];
+  @OneToMany(() => Task, (t) => t.creator) createdTasks: Task[];
+  @OneToMany(() => TaskAssignment, (ta) => ta.user)
+  assignments: TaskAssignment[];
 
-  @OneToMany(() => UserAchievement, ua => ua.user) achievements: UserAchievement[];
-  @OneToMany(() => Comment, c => c.author) comments: Comment[];
+  @OneToMany(() => UserAchievement, (ua) => ua.user)
+  achievements: UserAchievement[];
+  @OneToMany(() => Comment, (c) => c.author) comments: Comment[];
 
   setPassword(plain: string) {
     this.passwordHash = User.hashPassword(plain);

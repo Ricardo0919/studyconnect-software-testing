@@ -34,15 +34,21 @@ describe('Core flow (e2e) — Test API', () => {
   });
 
   it('health up', async () => {
-    await http().get('/health').expect(200).expect(({ body }) => {
-      expect(body.ok).toBe(true);
-    });
+    await http()
+      .get('/health')
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.ok).toBe(true);
+      });
   });
 
   it('create user A', async () => {
     const res = await http()
       .post('/users')
-      .send({ email: `charlie+${ts}@example.com`, displayName: `Charlie ${ts}` })
+      .send({
+        email: `charlie+${ts}@example.com`,
+        displayName: `Charlie ${ts}`,
+      })
       .expect(201);
     userA = res.body.id;
     expect(userA).toBeDefined();
@@ -60,7 +66,11 @@ describe('Core flow (e2e) — Test API', () => {
   it('create group', async () => {
     const res = await http()
       .post('/groups')
-      .send({ name: `Quantum Crew ${ts}`, description: 'Physics study squad', ownerId: userA })
+      .send({
+        name: `Quantum Crew ${ts}`,
+        description: 'Physics study squad',
+        ownerId: userA,
+      })
       .expect(201);
     groupId = res.body.id;
     expect(groupId).toBeDefined();
@@ -101,7 +111,11 @@ describe('Core flow (e2e) — Test API', () => {
   it('comment on task (by user A)', async () => {
     const res = await http()
       .post('/comments')
-      .send({ content: 'I’ll take Q1–Q3, can you handle Q4–Q6?', authorId: userA, taskId })
+      .send({
+        content: 'I’ll take Q1–Q3, can you handle Q4–Q6?',
+        authorId: userA,
+        taskId,
+      })
       .expect(201);
     expect(res.body.id).toBeDefined();
   });

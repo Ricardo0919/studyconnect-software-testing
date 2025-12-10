@@ -15,7 +15,10 @@ describe('GamificationService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GamificationService,
-        { provide: getRepositoryToken(UserAchievement), useValue: createMockRepo() },
+        {
+          provide: getRepositoryToken(UserAchievement),
+          useValue: createMockRepo(),
+        },
         { provide: UsersService, useValue: usersServiceMock },
       ],
     }).compile();

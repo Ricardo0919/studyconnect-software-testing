@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Param, Patch, HttpCode, HttpStatus, Req, NotFoundException, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  HttpCode,
+  HttpStatus,
+  Req,
+  NotFoundException,
+  Delete,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskStatusDto } from './dto/update-status.dto';
@@ -14,24 +26,28 @@ export class TasksController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UsePipes(new ValidationPipe({
-    whitelist: true,
-    transform: true,
-    stopAtFirstError: true,
-    validationError: { target: false, value: false },
-  }))
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      stopAtFirstError: true,
+      validationError: { target: false, value: false },
+    }),
+  )
   async create(@Req() req: any, @Body() dto: CreateTaskDto) {
     const creatorId = dto.creatorId ?? req?.user?.id;
     return this.tasks.create({ ...dto, creatorId });
   }
 
   @Patch(':id')
-  @UsePipes(new ValidationPipe({
-    whitelist: true,
-    transform: true,
-    stopAtFirstError: true,
-    validationError: { target: false, value: false },
-  }))
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      stopAtFirstError: true,
+      validationError: { target: false, value: false },
+    }),
+  )
   update(@Param('id') id: string, @Body() dto: UpdateTaskDto) {
     return this.tasks.updateTask(id, dto);
   }
@@ -51,14 +67,24 @@ export class TasksController {
     const t = await this.tasks.findOne(id);
     if (!t) return null;
 
-    console.log('controller.findOne: loaded task assignees ->', (t as any).assignees?.map((a: any) => ({ id: a.id, user: a.user && { id: a.user.id, email: a.user.email } })) );
+    console.log(
+      'controller.findOne: loaded task assignees ->',
+      (t as any).assignees?.map((a: any) => ({
+        id: a.id,
+        user: a.user && { id: a.user.id, email: a.user.email },
+      })),
+    );
 
     const status = (t as any).status ?? (t as any).state ?? '';
 
     const assignee = pickAssigneeEmail(t);
 
-    const group = t?.group ? { id: (t as any).group?.id, name: (t as any).group?.name } : null;
-    const creator = t?.creator ? { id: (t as any).creator?.id, email: (t as any).creator?.email } : null;
+    const group = t?.group
+      ? { id: (t as any).group?.id, name: (t as any).group?.name }
+      : null;
+    const creator = t?.creator
+      ? { id: (t as any).creator?.id, email: (t as any).creator?.email }
+      : null;
 
     return {
       id: (t as any).id,
@@ -71,18 +97,26 @@ export class TasksController {
       category: (t as any).category ?? null,
       creator,
       assignee,
-      assignees: (t as any).assignees?.map((a: any) => a?.user?.email).filter(Boolean) ?? [],
+      assignees:
+        (t as any).assignees?.map((a: any) => a?.user?.email).filter(Boolean) ??
+        [],
     };
   }
 
   @Patch(':id/status')
   changeStatus(@Param('id') id: string, @Body() body: UpdateTaskStatusDto) {
-    const normalized = (body.status as any).toString().toUpperCase().replace(/\s+/g, '_') as TaskStatus;
+    const normalized = (body.status as any)
+      .toString()
+      .toUpperCase()
+      .replace(/\s+/g, '_') as TaskStatus;
     return this.tasks.setStatus(id, normalized);
   }
   @Post(':id/status')
   setStatus(@Param('id') id: string, @Body() body: UpdateTaskStatusDto) {
-    const normalized = (body.status as any).toString().toUpperCase().replace(/\s+/g, '_') as TaskStatus;
+    const normalized = (body.status as any)
+      .toString()
+      .toUpperCase()
+      .replace(/\s+/g, '_') as TaskStatus;
     return this.tasks.setStatus(id, normalized);
   }
 
@@ -90,7 +124,7 @@ export class TasksController {
   async assign(
     @Param('id') id: string,
     @Param('userId') userId: string,
-    @Req() req: any
+    @Req() req: any,
   ) {
     const currentUserEmail = req?.user?.email ?? req?.user?.username ?? '';
     const currentUserId = req?.user?.id ?? undefined;
@@ -126,13 +160,13 @@ export class TasksController {
     @Body() body: AssignTaskDto,
     @Req() req: any,
   ) {
-    console.log('controller.assignInGroup: START', { 
+    console.log('controller.assignInGroup: START', {
       route: `PATCH /groups/${groupId}/tasks/${taskId}/assignee`,
       body,
-      user: { 
+      user: {
         id: req?.user?.id,
-        email: req?.user?.email ?? req?.user?.username
-      }
+        email: req?.user?.email ?? req?.user?.username,
+      },
     });
 
     try {
@@ -144,7 +178,7 @@ export class TasksController {
         taskId,
         assigneeEmail: body.assignee,
         currentUserEmail,
-        currentUserId 
+        currentUserId,
       });
 
       const result = await this.tasks.assignTask(
@@ -152,7 +186,7 @@ export class TasksController {
         taskId,
         body.assignee,
         currentUserEmail,
-        currentUserId
+        currentUserId,
       );
 
       console.log('controller.assignInGroup: service call successful', {
@@ -160,8 +194,8 @@ export class TasksController {
         assignees: result?.assignees?.map((a: any) => ({
           id: a.id,
           userId: a.userId,
-          email: a.user?.email
-        }))
+          email: a.user?.email,
+        })),
       });
 
       return result;
@@ -170,12 +204,11 @@ export class TasksController {
         error: error.message,
         stack: error.stack,
         code: error.code,
-        status: error.status
+        status: error.status,
       });
       throw error;
     }
   }
-
 }
 
 function pickAssigneeEmail(t: any): string | null {
@@ -188,4 +221,3 @@ function pickAssigneeEmail(t: any): string | null {
   }
   return null;
 }
-

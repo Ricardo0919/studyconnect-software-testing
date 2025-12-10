@@ -26,16 +26,22 @@ describe('Task entity (domain)', () => {
   it('rejects invalid transition OPEN -> COMPLETED', () => {
     const t = new Task();
     t.status = TaskStatus.OPEN;
-    expect(() => t.setStatus(TaskStatus.COMPLETED)).toThrow(/Invalid status transition/);
+    expect(() => t.setStatus(TaskStatus.COMPLETED)).toThrow(
+      /Invalid status transition/,
+    );
   });
 
   it('rejects other invalid transitions according to state machine', () => {
     const t = new Task();
     t.status = TaskStatus.BLOCKED;
-    expect(() => t.setStatus(TaskStatus.COMPLETED)).toThrow(/Invalid status transition/);
+    expect(() => t.setStatus(TaskStatus.COMPLETED)).toThrow(
+      /Invalid status transition/,
+    );
 
     t.status = TaskStatus.COMPLETED;
-    expect(() => t.setStatus(TaskStatus.IN_PROGRESS)).toThrow(/Invalid status transition/);
+    expect(() => t.setStatus(TaskStatus.IN_PROGRESS)).toThrow(
+      /Invalid status transition/,
+    );
   });
 
   it('isOverdue: true when past due and not completed', () => {

@@ -2,7 +2,8 @@ import { Given, When, Then } from '@cucumber/cucumber';
 import { strict as assert } from 'assert';
 import { StudyWorld } from './support/world';
 
-const stripQuotes = (v: any) => (typeof v === 'string' ? v.replace(/^"|"$/g, '') : v);
+const stripQuotes = (v: any) =>
+  typeof v === 'string' ? v.replace(/^"|"$/g, '') : v;
 const cleanVal = (v: any) => (typeof v === 'string' ? v.trim() : v);
 
 const sanitizeKey = (s: string) =>
@@ -44,15 +45,22 @@ const tableToBody = (table: any) => {
   );
 };
 
-
 Given('an authenticated user', async function (this: StudyWorld) {
   this.authToken = 'test-token-or-skip';
-  this.currentUser = this.currentUser ?? { id: '11111111-1111-1111-1111-111111111111', email: 'alice@uni.de' };
+  this.currentUser = this.currentUser ?? {
+    id: '11111111-1111-1111-1111-111111111111',
+    email: 'alice@uni.de',
+  };
 });
 
 When('the user creates a task with:', async function (this: StudyWorld, table) {
   const body = tableToBody(table);
-  console.log('TABLE BODY keys:', Object.keys(body), 'body:', JSON.stringify(body));
+  console.log(
+    'TABLE BODY keys:',
+    Object.keys(body),
+    'body:',
+    JSON.stringify(body),
+  );
   console.log('TABLE: currentUser ->', JSON.stringify(this.currentUser));
 
   if (!Object.prototype.hasOwnProperty.call(body, 'title')) {
@@ -62,12 +70,17 @@ When('the user creates a task with:', async function (this: StudyWorld, table) {
         .normalize('NFKC')
         .replace(/[^\p{L}\p{N}]+/gu, '')
         .toLowerCase();
-      if (slim === 'title') { body.title = body[k]; break; }
+      if (slim === 'title') {
+        body.title = body[k];
+        break;
+      }
     }
   }
 
   const payload: any = {
-    ...(Object.prototype.hasOwnProperty.call(body, 'title') ? { title: body.title } : {}),
+    ...(Object.prototype.hasOwnProperty.call(body, 'title')
+      ? { title: body.title }
+      : {}),
     notes: body.notes,
     category: body.category,
     priority: body.priority,
@@ -76,7 +89,9 @@ When('the user creates a task with:', async function (this: StudyWorld, table) {
     groupId: body.groupId,
     categoryId: body.categoryId,
   };
-  Object.keys(payload).forEach(k => { if (k !== 'title' && payload[k] === undefined) delete payload[k]; });
+  Object.keys(payload).forEach((k) => {
+    if (k !== 'title' && payload[k] === undefined) delete payload[k];
+  });
 
   console.log('PAYLOAD create-task:', JSON.stringify(payload));
 
@@ -94,23 +109,45 @@ When('the user creates a task with:', async function (this: StudyWorld, table) {
 });
 
 Then('the task is saved successfully', function (this: StudyWorld) {
-  assert.equal(this.lastStatus, 201, `Expected 201, got ${this.lastStatus}; body=${JSON.stringify(this.lastBody)}`);
+  assert.equal(
+    this.lastStatus,
+    201,
+    `Expected 201, got ${this.lastStatus}; body=${JSON.stringify(this.lastBody)}`,
+  );
   assert.ok(this.createdTaskId, 'Expected createdTaskId to be set');
 });
 
-Then('the task appears in the user’s list with status {string}', async function (this: StudyWorld, expected) {
-  const res = await this.http.get(`/tasks/${this.lastTaskId}`).set('Authorization', `Bearer ${this.authToken}`);
-  const status = (res.body?.status || '').toString().toUpperCase();
-  assert.equal(status, expected.toUpperCase(), `Expected ${expected}, got ${status}`);
-});
+Then(
+  'the task appears in the user’s list with status {string}',
+  async function (this: StudyWorld, expected) {
+    const res = await this.http
+      .get(`/tasks/${this.lastTaskId}`)
+      .set('Authorization', `Bearer ${this.authToken}`);
+    const status = (res.body?.status || '').toString().toUpperCase();
+    assert.equal(
+      status,
+      expected.toUpperCase(),
+      `Expected ${expected}, got ${status}`,
+    );
+  },
+);
 
-Then('the user sees a validation error {string}', function (this: StudyWorld, _msg) {
-  const ok = this.lastStatus! >= 400 && this.lastStatus! < 500;
-  assert.ok(ok, `Expected 4xx, got ${this.lastStatus}; body=${JSON.stringify(this.lastBody)}`);
-});
+Then(
+  'the user sees a validation error {string}',
+  function (this: StudyWorld, _msg) {
+    const ok = this.lastStatus! >= 400 && this.lastStatus! < 500;
+    assert.ok(
+      ok,
+      `Expected 4xx, got ${this.lastStatus}; body=${JSON.stringify(this.lastBody)}`,
+    );
+  },
+);
 
 Then('the task is not created', function (this: StudyWorld) {
-  assert.ok(!this.createdTaskId, 'Task should not be created on validation error');
+  assert.ok(
+    !this.createdTaskId,
+    'Task should not be created on validation error',
+  );
 });
 
-Then('the user must confirm or change the date', function () { });
+Then('the user must confirm or change the date', function () {});
