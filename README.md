@@ -1,3 +1,5 @@
+![CI](https://github.com/Ricardo0919/studyconnect-software-testing/actions/workflows/ci.yml/badge.svg)
+
 <p align="center">
   <img src="assets/studyconnect_logo.jpeg" alt="StudyConnect Logo" width="180" />
 </p>
