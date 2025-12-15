@@ -29,7 +29,7 @@ describe('UserAchievement entity (domain)', () => {
     });
 
     const ua = new UserAchievement();
-    ua.badge = Badge.STREAK_7_DAYS;
+    ua.badge = Badge.STREAK_7;
     ua.user = user;
     ua.points = ua.points ?? 0;
 

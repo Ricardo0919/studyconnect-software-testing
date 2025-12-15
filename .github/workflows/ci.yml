@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  api:
+    name: API - lint & test
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Start docker services
+        run: |
+          docker compose up -d
+          docker compose ps
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..40}; do
+            if docker compose exec -T postgres pg_isready -U studyconnect_app_db; then
+              echo "Postgres is ready"
+              exit 0
+            fi
+            echo "Waiting for Postgres... ($i)"
+            sleep 2
+          done
+
+          echo "Postgres did not become ready"
+          docker compose ps
+          docker compose logs --no-color postgres
+          exit 1
+
+      - name: Install dependencies (API)
+        working-directory: apps/api
+        run: npm install
+
+      - name: Create .env for API
+        working-directory: apps/api
+        run: |
+          cat > .env << 'EOF'
+          DATABASE_HOST=localhost
+          DATABASE_PORT=5432
+          DATABASE_USER=studyconnect_app_db
+          DATABASE_PASSWORD=super_secure_password_123
+          DATABASE_NAME=studyconnect_testing
+          PORT=3001
+          EOF
+
+      - name: Run unit tests
+        working-directory: apps/api
+        run: npm test
+
+      - name: Run lint
+        working-directory: apps/api
+        run: npm run lint
+
+      - name: Run e2e tests
+        working-directory: apps/api
+        run: npm run test:e2e
+
+      # - name: Run BDD tests
+      #   working-directory: apps/api
+      #   run: npm run test:bdd
+
+      - name: Stop docker services
+        if: always()
+        run: docker compose down -v

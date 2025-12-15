@@ -64,7 +64,9 @@ Before<StudyWorld>(async function () {
         console.log('Hooks: fallback GET /users failed', e2 && e2.message);
       }
     }
-  } catch (e) {}
+  } catch (e) {
+    void e;
+  }
 
   this.createdTaskId = undefined;
   this.lastTaskId = undefined;

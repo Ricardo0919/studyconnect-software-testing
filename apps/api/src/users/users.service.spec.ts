@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial } from 'typeorm';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UserRole } from '../common/enums/user-role.enum';
@@ -16,9 +16,11 @@ describe('UsersService', () => {
 
   beforeEach(async () => {
     repo = {
-      create: jest.fn((dto) => Object.assign(new User(), dto)),
-      save: jest.fn((entity) =>
-        Promise.resolve(Object.assign(new User(), entity)),
+      create: jest.fn((dto: DeepPartial<User>) =>
+        Object.assign(new User(), dto),
+      ),
+      save: jest.fn(async (entity: DeepPartial<User>) =>
+        Object.assign(new User(), entity),
       ),
       find: jest.fn().mockResolvedValue([]),
       findOne: jest.fn(),
@@ -37,9 +39,10 @@ describe('UsersService', () => {
   describe('register', () => {
     it('saves a hashed password and strips sensitive data', async () => {
       repo.findOne.mockResolvedValueOnce(null);
-      repo.save.mockImplementation(async (user) => {
-        user.id = 'user-1';
-        return user;
+      repo.save.mockImplementation(async (user: DeepPartial<User>) => {
+        const saved = Object.assign(new User(), user);
+        saved.id = 'user-1';
+        return saved;
       });
 
       const result = await service.register({
@@ -56,7 +59,8 @@ describe('UsersService', () => {
         }),
       );
       const savedUser = repo.save.mock.calls[0][0];
-      expect(savedUser.passwordHash).toBe(User.hashPassword('StrongPass1!'));
+      const expectedHash = User.hashPassword('StrongPass1!');
+      expect(savedUser.passwordHash).toBe(expectedHash);
       expect(result).toMatchObject({ id: 'user-1', email: 'test@example.com' });
       expect(result.passwordHash).toBeUndefined();
     });
@@ -142,7 +146,9 @@ describe('UsersService', () => {
         role: UserRole.STUDENT,
       });
       repo.findOne.mockResolvedValueOnce(user);
-      repo.save.mockImplementation(async (u) => u);
+      repo.save.mockImplementation(async (u: DeepPartial<User>) =>
+        Object.assign(new User(), u),
+      );
 
       const result = await service.assignRole('u1', UserRole.ADMIN);
 
@@ -162,7 +168,9 @@ describe('UsersService', () => {
         passwordHash: User.hashPassword('OldPass1!'),
       });
       repo.findOne.mockResolvedValueOnce(user);
-      repo.save.mockImplementation(async (u) => u);
+      repo.save.mockImplementation(async (u: DeepPartial<User>) =>
+        Object.assign(new User(), u),
+      );
 
       const result = await service.updateProfile('u1', {
         displayName: 'New Name',

@@ -16,7 +16,6 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskStatusDto } from './dto/update-status.dto';
 import { AssignTaskDto } from './dto/assign-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import type { Task } from './task.entity';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { TaskStatus } from '../common/enums/task-status.enum';
 
