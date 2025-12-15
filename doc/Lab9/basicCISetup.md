@@ -1,18 +1,18 @@
 # Basic CI Setup
 
 ## Overview
-This document describes the basic Continuous Integration (CI) setup for the **StudyConnect backend** (NestJS + TypeScript) located in `apps/api`, as required in **Exercise 9.1 – Basic CI Setup**.
+This document describes the **basic Continuous Integration (CI) setup** for the **StudyConnect backend** (NestJS + TypeScript), located in `apps/api`, as required for **Exercise 9.1 – Basic CI Setup**.
 
-The goal of this setup is to automatically run quality checks whenever changes are pushed to the repository or submitted via pull requests.
+The purpose of this setup is to automatically verify code quality and correctness whenever changes are pushed to the repository or submitted via pull requests.
 
 ## CI Tool
-The project uses **GitHub Actions** as the CI platform. GitHub Actions was chosen because it integrates natively with GitHub repositories and allows workflows to be defined as code using YAML files.
+The project uses **GitHub Actions** as the Continuous Integration platform. GitHub Actions was selected because it integrates natively with GitHub repositories and allows workflows to be defined declaratively using YAML configuration files.
 
 The CI workflow is defined in:
 - `.github/workflows/ci.yml`
 
 ## Workflow Triggers
-The workflow is automatically triggered on:
+The workflow is triggered automatically on:
 - Every `push` to any branch
 - Every `pull_request`
 
@@ -20,25 +20,30 @@ This ensures that all changes are validated before being merged into the main co
 
 ## Execution Environment
 - **Runner:** `ubuntu-latest`
-- **Node.js version:** `20.x` (configured using a matrix strategy)
+- **Node.js version:** `22.x`
 - **Package manager:** npm
 
+A matrix strategy is used to define the Node.js version, allowing easy extensibility if additional versions are required in the future.
+
 ## Project Scope
-The CI workflow is scoped specifically to the backend project located in:
+The CI pipeline is scoped specifically to the backend application located at:
 - `apps/api`
 
-This is achieved by configuring a default working directory for all workflow steps.
+All CI steps are executed relative to this directory to ensure that only the backend is analyzed and tested.
 
 ## Pipeline Steps
-The CI pipeline performs the following steps:
+The basic CI pipeline performs the following steps:
 
-1. Checkout the repository source code.
-2. Set up the Node.js environment and enable dependency caching.
-3. Install backend dependencies using `npm ci`.
-4. Run static code analysis using the linter (`npm run lint`, if present).
-5. Execute automated unit tests (`npm test`, if present).
+1. Checks out the repository source code.
+2. Sets up the Node.js runtime environment.
+3. Installs project dependencies using `npm install`.
+4. Runs static code analysis using ESLint (`npm run lint`).
+5. Executes automated unit tests using Jest (`npm test`).
 
 ## Expected Outcome
 For every push or pull request, GitHub Actions provides immediate feedback:
-- A successful run indicates that the backend builds, linting passes, and tests execute correctly.
-- A failed run highlights issues early in the development process, preventing faulty code from being merged.
+
+- A **successful run** confirms that the backend builds correctly, passes linting rules, and all unit tests succeed.
+- A **failed run** highlights code quality issues or failing tests early, preventing unstable code from being merged.
+
+This basic CI setup establishes a reliable foundation for further CI enhancements in later exercises.
