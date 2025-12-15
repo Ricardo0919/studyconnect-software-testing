@@ -29,7 +29,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Create .env for API
         run: |
@@ -49,13 +49,13 @@ jobs:
         run: |
           for i in {1..40}; do
             if docker compose -f ../../docker-compose.yml exec -T db pg_isready -U studyconnect_app_db; then
-              echo "Postgres is ready"
+              echo "Postgres is ready ✅"
               exit 0
             fi
             echo "Waiting for Postgres... ($i)"
             sleep 2
           done
-          echo "Postgres did not become ready in time"
+          echo "Postgres did not become ready in time ❌"
           docker compose -f ../../docker-compose.yml ps
           exit 1
 
