@@ -23,22 +23,54 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup up node.js
+      - name: Setup node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm install
-      
+        run: npm ci
+
+      - name: Create .env for API
+        run: |
+          cat > .env << 'EOF'
+          DATABASE_HOST=localhost
+          DATABASE_PORT=5432
+          DATABASE_USER=studyconnect_app_db
+          DATABASE_PASSWORD=super_secure_password_123
+          DATABASE_NAME=studyconnect
+          PORT=3001
+          EOF
+
+      - name: Start docker services (from repo root)
+        run: docker compose -f ../../docker-compose.yml up -d
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..40}; do
+            if docker compose -f ../../docker-compose.yml exec -T db pg_isready -U studyconnect_app_db; then
+              echo "Postgres is ready"
+              exit 0
+            fi
+            echo "Waiting for Postgres... ($i)"
+            sleep 2
+          done
+          echo "Postgres did not become ready in time"
+          docker compose -f ../../docker-compose.yml ps
+          exit 1
+
       - name: Run unit tests
         run: npm test
-      
-      - name: Run lint tests
+
+      - name: Run lint
         run: npm run lint
 
-      #- name: Run e2e tests
-      #  run: npm run test:e2e
-      
+      - name: Run e2e tests
+        run: npm run test:e2e
+
       #- name: Run BDD tests
       #  run: npm run test:bdd
+
+      - name: Stop docker services
+        if: always()
+        run: docker compose -f ../../docker-compose.yml down -v
