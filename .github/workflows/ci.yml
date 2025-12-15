@@ -82,6 +82,7 @@ jobs:
       #   run: npm run test:bdd
 
       - name: SonarQube Scan
+        if: matrix.node-version == '22.x'
         uses: sonarsource/sonarqube-scan-action@v2
         with:
           projectBaseDir: apps/api
