@@ -69,6 +69,10 @@ jobs:
         working-directory: apps/api
         run: npm test
 
+      - name: Run unit tests with coverage
+        working-directory: apps/api
+        run: npm run test:cov
+
       - name: Run lint
         working-directory: apps/api
         run: npm run lint

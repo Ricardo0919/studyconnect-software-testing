@@ -13,7 +13,7 @@ The project uses **GitHub Actions** as the CI platform.
 All workflows are defined as code and stored in the repository.
 
 Workflow configuration file:
-- `.github/workflows/ci.yml`
+- [ci.yml](../../.github/workflows/ci.yml)
 
 ## Enhancements Implemented
 

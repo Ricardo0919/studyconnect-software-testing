@@ -9,7 +9,7 @@ The purpose of this setup is to automatically verify code quality and correctnes
 The project uses **GitHub Actions** as the Continuous Integration platform. GitHub Actions was selected because it integrates natively with GitHub repositories and allows workflows to be defined declaratively using YAML configuration files.
 
 The CI workflow is defined in:
-- `.github/workflows/ci.yml`
+- [ci.yml](../../.github/workflows/ci.yml)
 
 ## Workflow Triggers
 The workflow is triggered automatically on:
