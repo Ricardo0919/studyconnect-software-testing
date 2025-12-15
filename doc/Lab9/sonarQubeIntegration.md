@@ -1,4 +1,4 @@
-# SonarQube Integration and Code Quality Analysis
+#  SonarQube Integration
 
 ## Overview
 This document describes the integration of **SonarQube** into the Continuous Integration (CI) pipeline for the **StudyConnect backend** (NestJS + TypeScript), as required for **Exercise 9.3 – Code Quality and Coverage Analysis**.
@@ -104,6 +104,21 @@ The latest analysis result:
 - **Quality Gate: Passed**
 
 This confirms that the backend meets the defined quality standards and is suitable for further development and integration.
+
+---
+
+## SonarQube Instance Access
+The results of the static code analysis can be reviewed directly in the self-hosted SonarQube instance.
+
+- **SonarQube URL:** http://193.197.231.20:9000
+- **Project name:** StudyConnectGroup2
+
+The project dashboard displays the latest analysis results, including:
+- Code quality ratings
+- Test coverage metrics
+- Code duplication analysis
+- Security Hotspots status
+- Quality Gate evaluation
 
 ---
 
