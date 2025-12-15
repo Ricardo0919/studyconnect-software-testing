@@ -16,15 +16,6 @@ jobs:
         node-version: [20.x, 22.x]
 
     steps:
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v2
-        with:
-          projectBaseDir: apps/api
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: http://193.197.231.20:9000
-          
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -89,6 +80,14 @@ jobs:
       # - name: Run BDD tests
       #   working-directory: apps/api
       #   run: npm run test:bdd
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v2
+        with:
+          projectBaseDir: apps/api
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: Stop docker services
         if: always()
