@@ -15,10 +15,6 @@ jobs:
       matrix:
         node-version: [22.x]
 
-    defaults:
-      run:
-        working-directory: apps/api
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,10 +24,36 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies
+      - name: Start docker services (Postgres)
+        working-directory: .
+        env:
+          DB_EXISTS: "1"
+        run: |
+          docker compose up -d
+          docker compose ps
+
+      - name: Wait for Postgres
+        working-directory: .
+        run: |
+          for i in {1..40}; do
+            if docker compose exec -T db pg_isready -U studyconnect_app_db; then
+              echo "Postgres is ready"
+              exit 0
+            fi
+            echo "Waiting for Postgres... ($i)"
+            sleep 2
+          done
+          echo "Postgres did not become ready in time"
+          docker compose ps
+          docker compose logs db
+          exit 1
+
+      - name: Install dependencies (API)
+        working-directory: apps/api
         run: npm install
 
       - name: Create .env for API
+        working-directory: apps/api
         run: |
           cat > .env << 'EOF'
           DATABASE_HOST=localhost
@@ -42,35 +64,23 @@ jobs:
           PORT=3001
           EOF
 
-      - name: Start docker services (from repo root)
-        run: docker compose -f ../../docker-compose.yml up -d
-
-      - name: Wait for Postgres
-        run: |
-          for i in {1..40}; do
-            if docker compose -f ../../docker-compose.yml exec -T db pg_isready -U studyconnect_app_db; then
-              echo "Postgres is ready ✅"
-              exit 0
-            fi
-            echo "Waiting for Postgres... ($i)"
-            sleep 2
-          done
-          echo "Postgres did not become ready in time ❌"
-          docker compose -f ../../docker-compose.yml ps
-          exit 1
-
       - name: Run unit tests
+        working-directory: apps/api
         run: npm test
 
       - name: Run lint
+        working-directory: apps/api
         run: npm run lint
 
       - name: Run e2e tests
+        working-directory: apps/api
         run: npm run test:e2e
 
-      #- name: Run BDD tests
-      #  run: npm run test:bdd
+      # - name: Run BDD tests
+      #   working-directory: apps/api
+      #   run: npm run test:bdd
 
       - name: Stop docker services
         if: always()
-        run: docker compose -f ../../docker-compose.yml down -v
+        working-directory: .
+        run: docker compose down -v
