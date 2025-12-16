@@ -81,6 +81,21 @@ jobs:
       #   working-directory: apps/api
       #   run: npm run test:bdd
 
+      - name: Run unit tests with coverage
+        working-directory: apps/api
+        run: npm run test:cov
+
+      - name: SonarQube Scan
+        if: matrix.node-version == '22.x'
+        uses: sonarsource/sonarqube-scan-action@v2
+        with:
+          projectBaseDir: apps/api
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
       - name: Stop docker services
         if: always()
         run: docker compose down -v
+      
+      

@@ -68,12 +68,12 @@ describe('Task entity (domain)', () => {
     const now = Date.now();
     const tPast = new Task();
     tPast.status = TaskStatus.IN_PROGRESS;
-    tPast.dueDate = new Date(now - 1);
+    tPast.dueDate = new Date(now - 1000);
     expect(tPast.isOverdue()).toBe(true);
 
     const tFuture = new Task();
     tFuture.status = TaskStatus.IN_PROGRESS;
-    tFuture.dueDate = new Date(now + 1);
+    tFuture.dueDate = new Date(now + 1000);
     expect(tFuture.isOverdue()).toBe(false);
   });
 });
