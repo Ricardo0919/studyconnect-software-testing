@@ -20,8 +20,9 @@ Before<StudyWorld>(async function () {
   try {
     const email = this.currentUser?.email ?? 'alice@uni.de';
     const displayName = (email.split && email.split('@')[0]) || 'alice';
+    const password = 'Password123!';
     try {
-      const res = await this.http.post('/users').send({ email, displayName });
+      const res = await this.http.post('/users/register').send({ email, displayName, password });
       console.log('Hooks: POST /users ->', res.status, res.body);
       if (res && res.body && res.body.id) {
         this.currentUser = { id: res.body.id, email };
