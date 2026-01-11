@@ -70,7 +70,7 @@ curl http://localhost:3000/health
 
 **2. Register User:**
 ```bash
-curl -X POST http://localhost:3000/users/register \
+curl -X POST http://localhost:3001/users/register \
   -H "Content-Type: application/json" \
   -d '{"email":"test@uni.de","displayName":"Test User","password":"Password123!"}'
 ```
