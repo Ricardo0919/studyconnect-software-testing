@@ -138,6 +138,10 @@ npm run bdd         # BDD tests with Cucumber
 # Windows (winget)
 winget install k6
 
+# Mac (brew)
+
+brew install k6
+
 # Or download from https://k6.io/docs/getting-started/installation/
 ```
 
