@@ -69,7 +69,7 @@ Backend runs at **http://localhost:3001**
 ## Environment Variables
 Backend `.env` file (`apps/api/.env`):
 ```
-PORT=3001
+PORT=3000
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_USER=studyconnect_app_db

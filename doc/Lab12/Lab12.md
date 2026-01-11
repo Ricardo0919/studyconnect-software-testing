@@ -1,8 +1,7 @@
 # Lab 12: Final Presentation – StudyConnect
 
 **Team Members:** Annabel Heberle, Artur Hoxha, Ricardo Sierra Roa  
-**Course:** Software Testing – HSE Esslingen  
-**Presentation Duration:** 10–15 minutes
+**Course:** Software Testing – HS Esslingen  
 
 ---
 
@@ -12,10 +11,8 @@
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| **Frontend** | Next.js (TypeScript) | Modern React framework with App Router |
 | **Backend** | NestJS (TypeScript) | Modular REST API with layered architecture |
 | **Database** | PostgreSQL + TypeORM | Relational data model with ORM support |
-| **Styling** | TailwindCSS, shadcn/ui | Responsive UI components |
 | **Containerization** | Docker, Docker Compose | Local development environment |
 
 ### 1.2 Key Implementation Specifics
@@ -29,16 +26,12 @@
 ### 1.3 High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Frontend (Next.js)                      │
-│                    http://localhost:3000                        │
-└─────────────────────────────────────────────────────────────────┘
                                 │
                                 │ REST API (HTTP/JSON)
                                 ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                         Backend (NestJS)                        │
-│                    http://localhost:3001                        │
+│                    http://localhost:3000                        │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────────┐ │
 │  │  Users   │  │  Tasks   │  │  Groups  │  │  Gamification    │ │
 │  │Controller│  │Controller│  │Controller│  │  Controller      │ │
@@ -100,7 +93,7 @@
 
 | Requirement | Status |
 |-------------|--------|
-| Available across web, mobile, desktop | ⚠️ Web only (responsive design) |
+| Available across web, mobile, desktop | ❌ Web only (responsive design) |
 | Clear and manageable architecture | ✅ 3-tier architecture |
 | Modular design | ✅ NestJS modules |
 
@@ -130,9 +123,9 @@ Based on our UX analysis (Lab 3), we prioritized:
 
 | Role | Team Member | Responsibilities |
 |------|-------------|------------------|
-| Backend Lead | Ricardo | NestJS API, Database design, CI/CD |
-| Frontend Lead | Annabel | Next.js UI, Component design |
-| Testing Lead | Artur | Test strategy, BDD scenarios, Reviews |
+| Backend / Testing | Ricardo | NestJS API, Database design, CI/CD, Test strategy, BDD scenarios, Reviews |
+| Backend / Testing | Annabel | NestJS API, Database design, CI/CD, Test strategy, BDD scenarios, Reviews |
+| Backend / Testing | Artur   | NestJS API, Database design, CI/CD, Test strategy, BDD scenarios, Reviews |
 
 **Collaboration Style:**
 - Weekly sync meetings
@@ -141,31 +134,26 @@ Based on our UX analysis (Lab 3), we prioritized:
 
 ### 3.2 Biggest Challenges
 
-1. **OneDrive Sync Issues** – Project in cloud folder caused file locking errors (`EPERM: operation not permitted`)
-   - *Solution:* Pause OneDrive during development or move project locally
-
-2. **BDD Test Setup** – Cucumber integration with NestJS required significant configuration
+1. **BDD Test Setup** – Cucumber integration with NestJS required significant configuration
    - *Solution:* Custom hooks for database cleanup, proper test isolation
 
-3. **Password Hashing Integration** – Tests failed when switching from plain `/users` to `/users/register`
+2. **Password Hashing Integration** – Tests failed when switching from plain `/users` to `/users/register`
    - *Solution:* Updated all test files to use correct endpoint with password field
 
-4. **Port Configuration** – Confusion between `.env` port (3001) and default port (3000)
-   - *Solution:* Consistent configuration across all test files
 
 ### 3.3 What Worked Well
 
-- ✅ **Modular NestJS Architecture** – Easy to add new features (Categories, Comments, Gamification)
-- ✅ **TypeORM Entities** – Clear data model with relations
-- ✅ **GitHub Actions CI** – Automated tests on every push
-- ✅ **Jest + SuperTest** – Reliable E2E testing
-- ✅ **Docker for PostgreSQL** – Consistent database environment
+- **Modular NestJS Architecture** – Easy to add new features (Categories, Comments, Gamification)
+- **TypeORM Entities** – Clear data model with relations
+- **GitHub Actions CI** – Automated tests on every push
+- **Jest + SuperTest** – Reliable E2E testing
+- **Docker for PostgreSQL** – Consistent database environment
 
 ### 3.4 What Didn't Work Well
 
-- ❌ **Time Management** – Review meetings often postponed (Lab 6)
-- ❌ **Scope Creep** – Some features added without proper planning
-- ❌ **Documentation Timing** – Documentation often written after implementation
+- **Time Management** – Review meetings often postponed (Lab 6)
+- **Scope Creep** – Some features added without proper planning
+- **Documentation Timing** – Documentation often written after implementation
 
 ### 3.5 Most Helpful/Interesting Exercises
 
@@ -178,17 +166,14 @@ Based on our UX analysis (Lab 3), we prioritized:
 
 ### 3.6 What We Would Do Differently
 
-1. **Move project out of OneDrive** from the start
-2. **Define API contracts first** before implementing
-3. **Write tests alongside features**, not after
-4. **More frequent, shorter sync meetings**
-5. **Better documentation of setup steps** for new team members
+1. **Define API contracts first** before implementing
+2. **Write tests alongside features**, not after
+3. **More frequent, shorter sync meetings**
+4. **Better documentation of setup steps** for new team members
 
 ### 3.7 Suggestions for the Course
 
-- More time for Lab 5 (BDD) – Setup is complex for beginners
-- Provide example Cucumber configurations for NestJS
-- Earlier introduction to Docker setup
+- More time for Lab 5 (BDD)
 
 ---
 
@@ -232,13 +217,13 @@ Endpoints Tested:
 
 | Environment | Status |
 |-------------|--------|
-| Local Development | ✅ Docker Compose |
-| Cloud Deployment | ❌ Not deployed (local only) |
+| Local Development | Docker Compose |
+| Cloud Deployment  | Not deployed (local only) |
 
 ### 4.5 Documentation
 
 - All lab exercises documented in `/doc/Lab1` through `/doc/Lab12`
-- API endpoints documented in `/doc/Lab10/api-testing.md`
+- A few API endpoints are documented in `/doc/Lab10/api-testing.md` for testing 
 - README.md with setup instructions
 
 ---
@@ -247,21 +232,12 @@ Endpoints Tested:
 
 ### Live Demo Checklist
 
-1. ✅ Start Docker containers (`docker-compose up -d`)
-2. ✅ Start backend (`cd apps/api && npm start`)
-3. ✅ Health check (`curl http://localhost:3001/health`)
-4. ✅ Register user
-5. ✅ Create task
-6. ✅ Show test execution (`npm test`)
-
+1. Start Docker containers (`docker-compose up -d`)
+2. Start backend (`cd apps/api && npm run start:dev`)
+3. Health check (`curl http://localhost:3001/health`)
+4. Register user
+5. Create task
+6. Show unit test execution (`npm run test`)
+7. Show e2e & bdd test execution (`npm run test:e2e & npm run test:bdd`)
+8. Show k6 test execution (`k6 run test/load/k6-load-test.js`)
 ---
-
-## Summary
-
-**StudyConnect** is a functional prototype demonstrating:
-- Modern 3-tier architecture (Next.js + NestJS + PostgreSQL)
-- Comprehensive testing strategy (Unit, E2E, BDD, Load)
-- CI/CD integration with GitHub Actions and SonarQube
-- Practical application of software testing principles
-
-**Key Takeaway:** Testing is not just about finding bugs – it's about building confidence in your code and enabling continuous improvement.
