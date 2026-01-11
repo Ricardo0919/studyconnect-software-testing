@@ -62,7 +62,7 @@ jobs:
           DATABASE_USER=studyconnect_app_db
           DATABASE_PASSWORD=super_secure_password_123
           DATABASE_NAME=studyconnect_testing
-          PORT=3001
+          PORT=3000
           EOF
 
       - name: Run unit tests
@@ -77,9 +77,9 @@ jobs:
         working-directory: apps/api
         run: npm run test:e2e
 
-      # - name: Run BDD tests
-      #   working-directory: apps/api
-      #   run: npm run test:bdd
+      - name: Run BDD tests
+        working-directory: apps/api
+        run: npm run test:bdd
 
       - name: Run unit tests with coverage
         working-directory: apps/api

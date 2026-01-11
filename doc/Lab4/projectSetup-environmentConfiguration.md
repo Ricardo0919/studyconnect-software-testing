@@ -39,7 +39,7 @@ npm install
 
 Create a `.env` file in `apps/api/`:
 ```
-PORT=3001
+PORT=3000
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_USER=studyconnect_app_db
@@ -54,7 +54,7 @@ DB_LOGGING=true
 cd apps/api
 npm start
 ```
-App: [http://localhost:3001](http://localhost:3001)  
+App: [http://localhost:3000](http://localhost:3000)  
 Health checks: `/health` and `/health/ready`
 
 ## Testing

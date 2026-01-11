@@ -3,7 +3,7 @@
 | Field | Content | Notes/ Abbreviations  |
 | :--- | :--- | :--- |
 | **Review No.** | -| |
-| **Project** | StudyConnect  | Labor of subject Softeare Testing |
+| **Project** | StudyConnect  | Labor of subject Software Testing |
 | **Project manager** | Prof. Dr. rer. nat. Dennis Grewe | |
 | **Quality expert / manager** | - | |
 | **Moderator** | Annabel Heberle | Organisiert und leitet das Treffen. |

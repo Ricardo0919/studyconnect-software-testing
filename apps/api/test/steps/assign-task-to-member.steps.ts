@@ -25,10 +25,11 @@ Given(
       const displayName = email.split('@')[0];
       const roleUp = role.trim().toUpperCase();
 
+      const password = 'Password123!';
       const uRes = await this.http
-        .post('/users')
+        .post('/users/register')
         .set('Authorization', `Bearer ${this.authToken}`)
-        .send({ email, displayName, role: roleUp });
+        .send({ email, displayName, password });
 
       let userId: string | undefined = uRes.body?.id;
       if (!userId) {
