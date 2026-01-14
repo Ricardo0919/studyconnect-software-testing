@@ -79,7 +79,7 @@
 | 4 | Organize tasks into thematic categories | ✅ Implemented |
 | 5 | Define progress states (open, in progress, completed) | ✅ Implemented |
 | 6 | Create or join study groups | ✅ Implemented |
-| 7 | Group admins can invite/remove members | ✅ Implemented |
+| 7 | Group admins can invite/remove members | ⚠️ Partially |
 | 8 | Group admins can assign tasks to members | ✅ Implemented |
 | 9 | Group admins can moderate group activities | ⚠️ Partially (basic moderation) |
 | 10 | Built-in commenting/messaging function | ✅ Implemented (Comments) |
